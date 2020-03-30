@@ -9,8 +9,8 @@ RevComp <- function(x){
 
 
 sample_sheet_raw <- fread("setup/SampleSheet_MiSeq_E7600.csv", skip = 21)
-all_indivs <- fread("setup/gdna_to_libprep.csv")
-final_pool <- fread("setup/microctonus_lib_290120.csv")
+all_indivs <- fread("setup/Microctonus_indiv_species_location.csv")
+final_pool <- fread("setup/C818-microctonus-samples.csv")
 
 # mung the barcodes in sample_sheet
 munged_barcodes <- rbind(
@@ -38,9 +38,8 @@ samples_both[, barcode_sequence := paste(i7_index, i5_index, sep = "+")]
 # set up metadata
 merged_data <- merge(samples_both,
                      all_indivs[, .(
-                         sample = indiv_name,
-                         host_name = host_name,
-                         para_name = para_name,
+                         sample = indiv,
+                         para_name = species,
                          location = location
                      )],
                      by = "sample",
@@ -50,16 +49,14 @@ merged_data <- merge(samples_both,
 sample_table <- merged_data[, .(
     sample = paste(
         sample,
-        host_name,
-        sub("_", "", para_name),
+        gsub("_", "", para_name),
         location,
         sep = "_"),
     barcode = barcode_sequence,
     r1_path = paste0("data/reads/", sample, "/", sample, "_R1.fq.gz"),
     r2_path = paste0("data/reads/", sample, "/", sample, "_R2.fq.gz"),
     metadata = paste(
-        host_name,
-        sub("_", "", para_name),
+        gsub("_", "", para_name),
         location,
         sep = "_")
 )]
