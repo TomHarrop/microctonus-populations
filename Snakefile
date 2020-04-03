@@ -14,7 +14,7 @@ sample_csv = 'data/samples.csv'
 # software
 honeybee_genotype_pipeline = (
     'shub://TomHarrop/'
-    'honeybee-genotype-pipeline:honeybee_genotype_pipeline_v0.0.8')
+    'honeybee-genotype-pipeline:honeybee_genotype_pipeline_v0.0.7')
 samtools = 'shub://TomHarrop/singularity-containers:samtools_1.9'
 
 ########
@@ -31,9 +31,9 @@ all_samples = sorted(set(sample_data.index))
 #########
 
 rule target:
-	input:
-		expand('output/010_genotypes/{ref}/calls.vcf.gz',
-			   ref=['hyp', 'aeth'])
+    input:
+        expand('output/010_genotypes/{ref}/calls.vcf.gz',
+               ref=['hyp', 'aeth'])
 
 checkpoint genotype:
     input:
@@ -43,7 +43,7 @@ checkpoint genotype:
         cutoffs = 'output/010_genotypes/{ref}/040_stats/ldepth.mean_cutoffs.csv',
         vcf = 'output/010_genotypes/{ref}/calls.vcf.gz',
         bam = 'output/010_genotypes/{ref}/merged.bam',
-        ref = 'output/010_genotypes/{ref}/015_ref/ref.fasta',
+        ref = 'o`utput/010_genotypes/{ref}/015_ref/ref.fasta',
         fai = 'output/010_genotypes/{ref}/015_ref/ref.fasta.fai',
     params:
         wd = 'output/010_genotypes/{ref}',
