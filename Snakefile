@@ -43,7 +43,7 @@ checkpoint genotype:
         cutoffs = 'output/010_genotypes/{ref}/040_stats/ldepth.mean_cutoffs.csv',
         vcf = 'output/010_genotypes/{ref}/calls.vcf.gz',
         bam = 'output/010_genotypes/{ref}/merged.bam',
-        ref = 'o`utput/010_genotypes/{ref}/015_ref/ref.fasta',
+        ref = 'output/010_genotypes/{ref}/015_ref/ref.fasta',
         fai = 'output/010_genotypes/{ref}/015_ref/ref.fasta.fai',
     params:
         wd = 'output/010_genotypes/{ref}',
