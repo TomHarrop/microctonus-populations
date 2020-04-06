@@ -14,7 +14,7 @@ sample_csv = 'data/samples.csv'
 # software
 honeybee_genotype_pipeline = (
     'shub://TomHarrop/'
-    'honeybee-genotype-pipeline:honeybee_genotype_pipeline_v0.0.7')
+    'honeybee-genotype-pipeline:honeybee_genotype_pipeline_v0.0.9')
 samtools = 'shub://TomHarrop/singularity-containers:samtools_1.9'
 
 ########
@@ -40,11 +40,12 @@ checkpoint genotype:
         csv = sample_csv,
         ref = lambda wildcards: hyp_ref if wildcards.ref == 'hyp' else aeth_ref
     output:
-        cutoffs = 'output/010_genotypes/{ref}/040_stats/ldepth.mean_cutoffs.csv',
+        # disable until the pipeline works again
+        # bam = 'output/010_genotypes/{ref}/merged.bam',
+        # cutoffs = 'output/010_genotypes/{ref}/040_stats/ldepth.mean_cutoffs.csv',
+        # fai = 'output/010_genotypes/{ref}/015_ref/ref.fasta.fai',
+        # ref = 'output/010_genotypes/{ref}/015_ref/ref.fasta',
         vcf = 'output/010_genotypes/{ref}/calls.vcf.gz',
-        bam = 'output/010_genotypes/{ref}/merged.bam',
-        ref = 'output/010_genotypes/{ref}/015_ref/ref.fasta',
-        fai = 'output/010_genotypes/{ref}/015_ref/ref.fasta.fai',
     params:
         wd = 'output/010_genotypes/{ref}',
         ploidy = '2'
