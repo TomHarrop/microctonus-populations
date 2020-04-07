@@ -14,7 +14,7 @@ sample_csv = 'data/samples.csv'
 # software
 honeybee_genotype_pipeline = (
     'shub://TomHarrop/'
-    'honeybee-genotype-pipeline:honeybee_genotype_pipeline_v0.0.9')
+    'honeybee-genotype-pipeline:honeybee_genotype_pipeline_v0.0.10')
 samtools = 'shub://TomHarrop/singularity-containers:samtools_1.9'
 
 ########
