@@ -42,6 +42,8 @@ rule target:
         # expand('output/010_genotypes/{ref}/calls.vcf.gz',
         #        ref=['hyp', 'aeth'])
         expand('output/020_filtered/{ref}/pruned.vcf.gz',
+               ref=['hyp', 'aeth']),
+        expand('output/020_filtered/{ref}/pruned.stats.txt',
                ref=['hyp', 'aeth'])
 
 
@@ -133,3 +135,25 @@ rule generic_index_vcf:
         'bgzip -c {input} > {output.gz} '
         '; '
         'tabix -p vcf {output.gz}'
+
+
+# generic vcf stats
+rule generic_vcf_stats:
+    input:
+        vcf = Path('{folder}', '{file}.vcf.gz'),
+        tbi = Path('{folder}', '{file}.vcf.gz.tbi')
+    wildcard_constraints:
+        folder = 'output/(?!010).*'
+    output:
+        stats = Path('{folder}', '{file}.stats.txt'),
+        plot = directory(Path('{folder}', '{file}.plots'))
+    singularity:
+        samtools
+    shell:
+        'bcftools stats '
+        '--verbose '
+        '-S <( bcftools query -l {input.vcf} ) '
+        '{input.vcf} '
+        '> {output.stats} ; '
+        'plot-vcfstats -s -v -p {output.plot} {output.stats} '
+
