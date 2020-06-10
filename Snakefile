@@ -41,7 +41,7 @@ rule target:
     input:
         # expand('output/010_genotypes/{ref}/calls.vcf.gz',
         #        ref=['hyp', 'aeth'])
-        expand('output/020_filtered/{ref}/pruned.vcf',
+        expand('output/020_filtered/{ref}/pruned.vcf.gz',
                ref=['hyp', 'aeth'])
 
 # get a set of LD-free SNPs
@@ -109,7 +109,7 @@ rule filter_vcf:
         '2> {log}'
 
 
-checkpoint genotype:
+rule genotype:
     input:
         csv = sample_csv,
         ref = lambda wildcards: hyp_ref if wildcards.ref == 'hyp' else aeth_ref
@@ -146,7 +146,7 @@ rule generic_index_vcf:
     input:
         Path('{folder}', '{file}.vcf')
     wildcard_constraints:
-        file = '(?!calls)'
+        folder = '.*(?!010_genotypes).*'
     output:
         gz = Path('{folder}', '{file}.vcf.gz'),
         tbi = Path('{folder}', '{file}.vcf.gz.tbi')
