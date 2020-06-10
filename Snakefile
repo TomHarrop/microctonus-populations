@@ -41,7 +41,7 @@ rule target:
     input:
         # expand('output/010_genotypes/{ref}/calls.vcf.gz',
         #        ref=['hyp', 'aeth'])
-        expand('output/020_filtered/{ref}/pruned.vcf.gz',
+        expand('output/020_filtered/{ref}/pruned.vcf',
                ref=['hyp', 'aeth'])
 
 # get a set of LD-free SNPs
