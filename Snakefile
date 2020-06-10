@@ -46,6 +46,14 @@ rule target:
         expand('output/020_filtered/{ref}/pruned.stats.txt',
                ref=['hyp', 'aeth'])
 
+# fst stats etc.
+# plink --vcf pruned.vcf.gz --fst --double-id --allow-extra-chr --within within.txt
+# plink --vcf pruned.vcf.gz --het --double-id --allow-extra-chr --within within.txt
+# paste \
+#     <( bcftools query -l pruned.vcf.gz | cut -d'_' -f2 )
+#     <( bcftools query -l pruned.vcf.gz) \
+#     <( bcftools query -l pruned.vcf.gz | cut -d'_' -f2,3 )
+# paste blah2 blah2 blah1 > within.txt
 
 # prune LD with bcftools
 rule prune_vcf:
