@@ -79,7 +79,7 @@ rule list_pruned_snps:
         'cd {params.wd} || exit 1 ; '
         'plink '
         '--vcf {params.vcf} '
-        '--double-id '
+        # '--double-id '
         '--allow-extra-chr '
         '--set-missing-var-ids @:# '
         '--indep-pairwise {params.indep} '
