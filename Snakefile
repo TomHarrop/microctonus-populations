@@ -44,54 +44,31 @@ rule target:
         expand('output/020_filtered/{ref}/pruned.vcf.gz',
                ref=['hyp', 'aeth'])
 
-# get a set of LD-free SNPs
+
+# prune LD with bcftools
 rule prune_vcf:
     input:
-        vcf = 'output/020_filtered/{ref}/filtered.vcf',
-        prune = 'output/020_filtered/{ref}/plink.prune.in'
+        vcf = 'output/020_filtered/{ref}/filtered.vcf.gz'
     output:
-        vcf = 'output/020_filtered/{ref}/pruned.vcf'
+        temp('output/020_filtered/{ref}/pruned.vcf')
     log:
         'output/logs/prune_vcf.{ref}.log'
     singularity:
         samtools
     shell:
-        'bcftools view '
-        '-i \'ID=@{input.prune}\' '
+        'bcftools +prune '
+        '--max-LD 0.1 '
+        '--window 50 '
         '{input.vcf} '
-        '> {output.vcf} '
+        '> {output} '
         '2> {log}'
-
-rule list_pruned_snps:
-    input:
-        vcf = 'output/020_filtered/{ref}/filtered.vcf'
-    output:
-        'output/020_filtered/{ref}/plink.prune.in'
-    params:
-        vcf = lambda wildcards, input: resolve_path(input.vcf),
-        wd = 'output/020_filtered/{ref}',
-        indep = '50 10 0.1'     # 50 kb window, 10 SNPs, r2 < 0.1
-    log:
-        resolve_path('output/logs/list_pruned_snps.{ref}.log')
-    singularity:
-        plink
-    shell:
-        'cd {params.wd} || exit 1 ; '
-        'plink '
-        '--vcf {params.vcf} '
-        # '--double-id '
-        '--allow-extra-chr '
-        '--set-missing-var-ids @:# '
-        '--indep-pairwise {params.indep} '
-        '--out plink '
-        '&> {log}'
 
 
 rule filter_vcf:
     input:
         vcf = 'output/010_genotypes/{ref}/calls.vcf.gz',
     output:
-        'output/020_filtered/{ref}/filtered.vcf'
+        temp('output/020_filtered/{ref}/filtered.vcf')
     params:
         min_maf = 0.05,
         f_missing = 0.2
