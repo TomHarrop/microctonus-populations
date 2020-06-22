@@ -167,15 +167,25 @@ rule generic_vcf_stats:
         'plot-vcfstats -s -v -p {output.plot} {output.stats} '
 
 
+def demux_target(wildcards):
+    checkpoints.demultiplex.get().output
+    return (
+        expand('output/000_tmp/reads/{barcode}_r{r}.fastq.gz',
+               barcode=sorted(set(sample_data['barcode'])),
+               r=['1', '2']))
+
+rule demux_target:
+    input:
+        demux_target
+
+
 # try manual demux
-rule demultiplex:
+checkpoint demultiplex:
     input:
         r1 = 'data/muxed/Undetermined_S0_L006_R1_001.fastq.gz',
         r2 = 'data/muxed/Undetermined_S0_L006_R2_001.fastq.gz'
     output:
-        expand('output/000_tmp/reads/{barcode}_r{r}.fastq.gz',
-               barcode=sorted(set(sample_data['barcode'])),
-               r=['1', '2'])
+        directory('output/000_tmp/reads')
     log:
         'output/logs/demultiplex.log'
     params:
