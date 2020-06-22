@@ -3,6 +3,8 @@
 import pandas
 from pathlib import Path
 
+print(snakemake)
+
 sample_data = pandas.read_csv(snakemake.input['sample_csv'],
                               index_col='sample')
 
