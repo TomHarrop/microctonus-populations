@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import snakemake
 import pandas
 from pathlib import Path
 
