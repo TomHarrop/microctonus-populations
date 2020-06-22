@@ -141,6 +141,40 @@ rule genotype:
         '--restart_times 1 '
         '&> {log}'
 
+# try manual demux
+rule generate_sample_csv:
+    input:
+        unpack(demux_target),
+        sample_csv = 'data/samples.csv'
+    output:
+        csv = 'output/005_config/samples.csv'
+    script:
+        'src/generate_sample_csv.py'
+
+checkpoint demultiplex:
+    input:
+        r1 = 'data/muxed/Undetermined_S0_L006_R1_001.fastq.gz',
+        r2 = 'data/muxed/Undetermined_S0_L006_R2_001.fastq.gz'
+    output:
+        directory('output/000_tmp/reads')
+    log:
+        'output/logs/demultiplex.log'
+    params:
+        names = ','.join(sorted(set(sample_data['barcode']))),
+        out = 'output/000_tmp/reads/%_r1.fastq.gz',
+        out2 = 'output/000_tmp/reads/%_r2.fastq.gz'
+    singularity:
+        bbmap
+    shell:
+        'demuxbyname.sh '
+        'in={input.r1} '
+        'in2={input.r2} '
+        'out={params.out} '
+        'out2={params.out2} '
+        'names={params.names} '
+        'prefixmode=f '
+        '-Xmx100g '
+        '2> {log}'
 
 
 # generic vcf index
@@ -179,43 +213,3 @@ rule generic_vcf_stats:
         '{input.vcf} '
         '> {output.stats} ; '
         'plot-vcfstats -s -v -p {output.plot} {output.stats} '
-
-
-
-rule generate_sample_csv:
-    input:
-        unpack(demux_target),
-        sample_csv = 'data/samples.csv'
-    output:
-        csv = 'output/005_config/samples.csv'
-    script:
-        'src/generate_sample_csv.py'
-
-
-# try manual demux
-checkpoint demultiplex:
-    input:
-        r1 = 'data/muxed/Undetermined_S0_L006_R1_001.fastq.gz',
-        r2 = 'data/muxed/Undetermined_S0_L006_R2_001.fastq.gz'
-    output:
-        directory('output/000_tmp/reads')
-    log:
-        'output/logs/demultiplex.log'
-    params:
-        names = ','.join(sorted(set(sample_data['barcode']))),
-        out = 'output/000_tmp/reads/%_r1.fastq.gz',
-        out2 = 'output/000_tmp/reads/%_r2.fastq.gz'
-    singularity:
-        bbmap
-    shell:
-        'demuxbyname.sh '
-        'in={input.r1} '
-        'in2={input.r2} '
-        'out={params.out} '
-        'out2={params.out2} '
-        'names={params.names} '
-        'prefixmode=f '
-        '-Xmx100g '
-        '2> {log}'
-
-
