@@ -180,19 +180,12 @@ def demux_target(wildcards):
 
 rule generate_sample_csv:
     input:
-        demux_target
+        unpack(demux_target),
+        sample_csv = 'data/samples.csv'
     output:
         csv = 'output/005_config/samples.csv'
-    run:
-        cdir = 'output/000_tmp/reads'
-        my_bcs = snakemake.io.glob_wildcards(Path(cdir, '{bc}_r1.fastq.gz')).bc
-        my_mask = sample_data['barcode'].isin(my_bcs)
-        my_csv = sample_data[my_mask]
-        my_csv['r1_path'] = [f'output/000_tmp/reads/{x}_r1.fastq.gz'
-                             for x in my_csv['barcode']]
-        my_csv['r2_path'] = [f'output/000_tmp/reads/{x}_r2.fastq.gz'
-                             for x in my_csv['barcode']]
-        my_csv.to_csv(output.csv)
+    script:
+        'src/generate_sample_csv.py'
 
 
 # try manual demux
