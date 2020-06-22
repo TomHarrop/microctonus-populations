@@ -168,10 +168,11 @@ rule generic_vcf_stats:
 
 
 def demux_target(wildcards):
-    checkpoints.demultiplex.get().output
+    cdir = checkpoints.demultiplex.get(**wildcards).output[0]
+    my_bcs = glob_wildcards(Path(cdir, '{bc}_r1.fastq.gz')).bc
     return (
         expand('output/000_tmp/reads/{barcode}_r{r}.fastq.gz',
-               barcode=sorted(set(sample_data['barcode'])),
+               barcode=my_bcs,
                r=['1', '2']))
 
 rule demux_target:
