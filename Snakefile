@@ -175,8 +175,7 @@ def demux_target(wildcards):
                         barcode=my_bcs,
                         r=['1', '2']),
         'directory': cdir}
-    print(output_dict)
-    return()
+    return(output_dict)
 
 rule generate_sample_csv:
     input:
