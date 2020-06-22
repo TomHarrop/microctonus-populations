@@ -23,6 +23,7 @@ honeybee_genotype_pipeline = (
     'honeybee-genotype-pipeline:honeybee_genotype_pipeline_v0.0.10')
 samtools = 'shub://TomHarrop/align-utils:samtools_1.10'
 plink = 'shub://MarissaLL/singularity-containers:plink_1.9'
+bbmap = 'shub://TomHarrop/seq-utils:bbmap_38.76'
 
 ########
 # MAIN #
@@ -164,4 +165,34 @@ rule generic_vcf_stats:
         '{input.vcf} '
         '> {output.stats} ; '
         'plot-vcfstats -s -v -p {output.plot} {output.stats} '
+
+
+# try manual demux
+rule demultiplex:
+    input:
+        r1 = 'data/muxed/Undetermined_S0_L006_R1_001.fastq.gz',
+        r2 = 'data/muxed/Undetermined_S0_L006_R2_001.fastq.gz'
+    output:
+        expand('output/000_tmp/reads/{barcode}_r{r}.fastq.gz',
+               barcode=sorted(set(sample_data['barcode'])),
+               r=['1', '2'])
+    log:
+        'output/logs/demultiplex.log'
+    params:
+        names = ','.join(sorted(set(sample_data['barcode']))),
+        out = 'output/000_tmp/reads/%_r1.fastq.gz',
+        out2 = 'output/000_tmp/reads/%_r2.fastq.gz'
+    singularity:
+        bbmap
+    shell:
+        'demuxbyname.sh '
+        'in={input.r1} '
+        'in2={input.r2} '
+        'out={params.out} '
+        'out2={params.out2} '
+        'names={params.names} '
+        'prefixmode=f '
+        '-Xmx100g '
+        '2> {log}'
+
 
