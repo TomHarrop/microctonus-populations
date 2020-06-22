@@ -5,6 +5,20 @@ import pandas
 from pathlib import Path
 
 
+def demux_target(wildcards):
+    '''
+    glob the demux output directory to see which barcodes worked
+    '''
+    cdir = checkpoints.demultiplex.get(**wildcards).output[0]
+    my_bcs = glob_wildcards(Path(cdir, '{bc}_r1.fastq.gz')).bc
+    output_dict = {
+        'files': expand('output/000_tmp/reads/{barcode}_r{r}.fastq.gz',
+                        barcode=my_bcs,
+                        r=['1', '2']),
+        'directory': cdir}
+    return(output_dict)
+
+
 def resolve_path(x):
     return(Path(x).resolve().as_posix())
 
@@ -99,7 +113,7 @@ rule filter_vcf:
 
 rule genotype:
     input:
-        csv = sample_csv,
+        csv = 'output/005_config/samples.csv',
         ref = lambda wildcards: hyp_ref if wildcards.ref == 'hyp' else aeth_ref
     output:
         # disable until the pipeline works again
@@ -167,15 +181,6 @@ rule generic_vcf_stats:
         'plot-vcfstats -s -v -p {output.plot} {output.stats} '
 
 
-def demux_target(wildcards):
-    cdir = checkpoints.demultiplex.get(**wildcards).output[0]
-    my_bcs = glob_wildcards(Path(cdir, '{bc}_r1.fastq.gz')).bc
-    output_dict = {
-        'files': expand('output/000_tmp/reads/{barcode}_r{r}.fastq.gz',
-                        barcode=my_bcs,
-                        r=['1', '2']),
-        'directory': cdir}
-    return(output_dict)
 
 rule generate_sample_csv:
     input:

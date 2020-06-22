@@ -4,8 +4,6 @@ import pandas
 from pathlib import Path
 import snakemake as sm
 
-print(snakemake.input)
-
 sample_data = pandas.read_csv(snakemake.input['sample_csv'],
                               index_col='sample')
 
