@@ -170,15 +170,13 @@ rule generic_vcf_stats:
 def demux_target(wildcards):
     cdir = checkpoints.demultiplex.get(**wildcards).output[0]
     my_bcs = glob_wildcards(Path(cdir, '{bc}_r1.fastq.gz')).bc
-    return (
-        expand('output/000_tmp/reads/{barcode}_r{r}.fastq.gz',
-               barcode=my_bcs,
-               r=['1', '2']))
-
-rule demux_target:
-    input:
-        demux_target
-
+    output_dict = {
+        'files': expand('output/000_tmp/reads/{barcode}_r{r}.fastq.gz',
+                        barcode=my_bcs,
+                        r=['1', '2']),
+        'directory': cdir}
+    print(output_dict)
+    return()
 
 rule generate_sample_csv:
     input:
