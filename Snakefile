@@ -34,7 +34,7 @@ sample_csv = 'data/samples.csv'
 # software
 honeybee_genotype_pipeline = (
     'shub://TomHarrop/'
-    'honeybee-genotype-pipeline:honeybee_genotype_pipeline_v0.0.10')
+    'honeybee-genotype-pipeline:honeybee_genotype_pipeline_v0.0.11')
 samtools = 'shub://TomHarrop/align-utils:samtools_1.10'
 plink = 'shub://MarissaLL/singularity-containers:plink_1.9'
 bbmap = 'shub://TomHarrop/seq-utils:bbmap_38.76'
