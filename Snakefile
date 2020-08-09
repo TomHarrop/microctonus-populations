@@ -7,12 +7,12 @@ from pathlib import Path
 
 def demux_target(wildcards):
     '''
-    glob the demux output directory to see which barcodes worked
+    glob the demux output directory to see which samples worked
     '''
     cdir = checkpoints.demultiplex.get(**wildcards).output[0]
-    my_bcs = glob_wildcards(Path(cdir, '{bc}_r1.fastq.gz')).bc
+    my_samples = glob_wildcards(Path(cdir, '{sample}_r1.fastq.gz')).bc
     output_dict = {
-        'files': expand('output/000_tmp/reads/{barcode}_r{r}.fastq.gz',
+        'files': expand('output/000_tmp/reads/{sample}_r{r}.fastq.gz',
                         barcode=my_bcs,
                         r=['1', '2']),
         'directory': cdir}
@@ -38,6 +38,8 @@ honeybee_genotype_pipeline = (
 samtools = 'shub://TomHarrop/align-utils:samtools_1.10'
 plink = 'shub://MarissaLL/singularity-containers:plink_1.9'
 bbmap = 'shub://TomHarrop/seq-utils:bbmap_38.76'
+csdemux = 'shub://TomHarrop/csdemux:csdemux_v0.0.4'
+
 
 ########
 # MAIN #
@@ -154,27 +156,28 @@ rule generate_sample_csv:
 checkpoint demultiplex:
     input:
         r1 = 'data/muxed/Undetermined_S0_L006_R1_001.fastq.gz',
-        r2 = 'data/muxed/Undetermined_S0_L006_R2_001.fastq.gz'
+        r2 = 'data/muxed/Undetermined_S0_L006_R2_001.fastq.gz',
+        sample_csv = 'data/samples.csv'
     output:
-        directory('output/000_tmp/reads')
+        directory('output/010_demux/reads')
     log:
         'output/logs/demultiplex.log'
     params:
-        names = ','.join(sorted(set(sample_data['barcode']))),
-        out = 'output/000_tmp/reads/%_r1.fastq.gz',
-        out2 = 'output/000_tmp/reads/%_r2.fastq.gz'
+        outdir = 'output/010_demux'
+    threads:
+        workflow.cores
     singularity:
-        bbmap
+        csdemux
     shell:
-        'demuxbyname.sh '
-        'in={input.r1} '
-        'in2={input.r2} '
-        'out={params.out} '
-        'out2={params.out2} '
-        'names={params.names} '
-        'prefixmode=f '
-        '-Xmx100g '
-        '2> {log}'
+        'csdemux '
+        '--threads {threads} '
+        '--mem_gb 500 '
+        '--restart_times 2 '
+        '--r1 {input.r1} '
+        '--r2 {input.r2} '
+        '--samples_csv {input.sample_csv} '
+        '--outdir {params.outdir} '
+        '&> {log}'
 
 
 # generic vcf index

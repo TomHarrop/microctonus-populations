@@ -25,20 +25,6 @@ dapc_xv_file <- snakemake@output[["dapc_xv"]]
 # DEV
 vcf_file <- "output/020_filtered/hyp/pruned.vcf.gz"
 
-# roughly north to south?
-pop_order <- c(
-    "Coromandel",
-    "Ruakura",
-    "Taranaki",
-    "Wellington",
-    "Reefton", 
-    "Greymouth",
-    "Lincoln",
-    "O",
-    "Mararoa",
-    "Mossburn",
-    "Fortrose")
-
 
 ########
 # MAIN #

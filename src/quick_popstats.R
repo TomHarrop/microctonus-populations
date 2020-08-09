@@ -13,10 +13,10 @@ vcf <- read.vcfR(vcf_file)
 vcf_gl <- vcfR2genlight(vcf)
 
 # drop aeth?
-snp_data <- snp_data[grepl("mhyp", snp_data$ind.names),]
+snp_data <- vcf_gl[grepl("mhyp", vcf_gl$ind.names),]
 
 # main scaffolds only
-vcf_scaf <- vcf_gl[, startsWith(vcf_gl$loc.names, "PGA_scaffold")]
+vcf_scaf <- snp_data[, startsWith(snp_data$loc.names, "PGA_scaffold")]
 
 # impute
 na_means <- tab(vcf_scaf, NA.method = "mean")
