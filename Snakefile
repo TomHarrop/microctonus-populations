@@ -58,9 +58,9 @@ rule target:
     input:
         # expand('output/010_genotypes/{ref}/calls.vcf.gz',
         #        ref=['hyp', 'aeth'])
-        expand('output/020_filtered/{ref}/pruned.vcf.gz',
+        expand('output/030_filtered/{ref}/pruned.vcf.gz',
                ref=['hyp', 'aeth']),
-        expand('output/020_filtered/{ref}/pruned.stats.txt',
+        expand('output/030_filtered/{ref}/pruned.stats.txt',
                ref=['hyp', 'aeth'])
 
 # fst stats etc.
@@ -75,9 +75,9 @@ rule target:
 # prune LD with bcftools
 rule prune_vcf:
     input:
-        vcf = 'output/020_filtered/{ref}/filtered.vcf.gz'
+        vcf = 'output/030_filtered/{ref}/filtered.vcf.gz'
     output:
-        temp('output/020_filtered/{ref}/pruned.vcf')
+        temp('output/030_filtered/{ref}/pruned.vcf')
     log:
         'output/logs/prune_vcf.{ref}.log'
     singularity:
@@ -93,9 +93,9 @@ rule prune_vcf:
 
 rule filter_vcf:
     input:
-        vcf = 'output/010_genotypes/{ref}/calls.vcf.gz',
+        vcf = 'output/020_genotypes/{ref}/calls.vcf.gz',
     output:
-        temp('output/020_filtered/{ref}/filtered.vcf')
+        temp('output/030_filtered/{ref}/filtered.vcf')
     params:
         min_maf = 0.05,
         f_missing = 0.2
@@ -124,9 +124,9 @@ rule genotype:
         # cutoffs = 'output/010_genotypes/{ref}/040_stats/ldepth.mean_cutoffs.csv',
         # fai = 'output/010_genotypes/{ref}/015_ref/ref.fasta.fai',
         # ref = 'output/010_genotypes/{ref}/015_ref/ref.fasta',
-        vcf = 'output/010_genotypes/{ref}/calls.vcf.gz',
+        vcf = 'output/020_genotypes/{ref}/calls.vcf.gz',
     params:
-        wd = 'output/010_genotypes/{ref}',
+        wd = 'output/020_genotypes/{ref}',
         ploidy = '2'
     log:
         'output/logs/genotype.{ref}.log'
