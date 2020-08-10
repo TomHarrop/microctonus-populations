@@ -115,7 +115,7 @@ rule filter_vcf:
 
 rule genotype:
     input:
-        demux_target,
+        unpack(demux_target),
         csv = 'output/005_config/samples.csv',
         ref = lambda wildcards: hyp_ref if wildcards.ref == 'hyp' else aeth_ref,
     output:
