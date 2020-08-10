@@ -9,11 +9,11 @@ def demux_target(wildcards):
     '''
     glob the demux output directory to see which samples worked
     '''
-    cdir = checkpoints.demultiplex.get().output[0]
-    my_samples = glob_wildcards(Path(cdir, '{sample}_r1.fastq.gz')).bc
+    cdir = checkpoints.demultiplex.get(**wildcards).output[0]
+    my_samples = glob_wildcards(Path(cdir, '{sample}_r1.fastq.gz')).sample
     output_dict = {
         'files': expand('output/000_tmp/reads/{sample}_r{r}.fastq.gz',
-                        barcode=my_bcs,
+                        sample=my_samples,
                         r=['1', '2']),
         'directory': cdir}
     return(output_dict)
@@ -32,13 +32,13 @@ aeth_ref = 'data/maeth.fa'
 sample_csv = 'data/samples.csv'
 
 # software
+bbmap = 'shub://TomHarrop/seq-utils:bbmap_38.76'
+csdemux = 'shub://TomHarrop/csdemux:csdemux_v0.0.4'
 honeybee_genotype_pipeline = (
     'shub://TomHarrop/'
     'honeybee-genotype-pipeline:honeybee_genotype_pipeline_v0.0.11')
-samtools = 'shub://TomHarrop/align-utils:samtools_1.10'
 plink = 'shub://MarissaLL/singularity-containers:plink_1.9'
-bbmap = 'shub://TomHarrop/seq-utils:bbmap_38.76'
-csdemux = 'shub://TomHarrop/csdemux:csdemux_v0.0.4'
+samtools = 'shub://TomHarrop/align-utils:samtools_1.10'
 
 
 ########
