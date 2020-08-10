@@ -116,7 +116,8 @@ rule filter_vcf:
 rule genotype:
     input:
         csv = 'output/005_config/samples.csv',
-        ref = lambda wildcards: hyp_ref if wildcards.ref == 'hyp' else aeth_ref
+        ref = lambda wildcards: hyp_ref if wildcards.ref == 'hyp' else aeth_ref,
+        demux_target
     output:
         # disable until the pipeline works again
         # bam = 'output/010_genotypes/{ref}/merged.bam',
@@ -147,6 +148,7 @@ rule genotype:
 rule generate_sample_csv:
     input:
         unpack(demux_target),
+        directory = 'output/010_demux/reads',
         sample_csv = 'data/samples.csv'
     output:
         csv = 'output/005_config/samples.csv'
