@@ -12,7 +12,7 @@ def demux_target(wildcards):
     cdir = checkpoints.demultiplex.get(**wildcards).output[0]
     my_samples = glob_wildcards(Path(cdir, '{sample}_r1.fastq.gz')).sample
     output_dict = {
-        'files': expand('output/000_tmp/reads/{sample}_r{r}.fastq.gz',
+        'files': expand('output/010_demux/reads/{sample}_r{r}.fastq.gz',
                         sample=my_samples,
                         r=['1', '2']),
         'directory': cdir}
