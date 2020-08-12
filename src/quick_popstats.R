@@ -36,6 +36,19 @@ pops <- sapply(colnames(vcf@gt), function(x)
 my_diff <- genetic_diff(vcf, as.factor(pops[-1]))
 diff_dt <- data.table(my_diff)
 
+#melt
+pd <- melt(diff_dt,
+     id.vars = c("CHROM", "POS"),
+     measure.vars = c("Hs_maethm_lincoln", "Hs_mhyp_lincoln", "Hs_mhyp_ruakura", "Ht"))
+
+ggplot(pd, aes(x = variable, y = value)) +
+    geom_boxplot()
+
+
+## No id variables; using all as measure variables
+
+p <- ggplot(diff_dt, aes(x=variable, y=Ht)) + geom_violin(fill="#2ca25f", adjust = 1.2)
+
 # [startsWith(CHROM, "PGA_scaffold")]
 
 # set up coords for dirty plot
