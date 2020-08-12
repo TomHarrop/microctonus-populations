@@ -75,6 +75,18 @@ pca_pd <- merge(pca_long,
                 all.y = FALSE)
 pca_pd[, facet_label := paste0(component, " (", round(pct_var, 1), "%)")]
 
+# 2d pc
+plotpcs <- pca_pd[, gtools::mixedsort(unique(component))[1:2]]
+pca_pd_wide <- dcast(pca_pd,
+                     individual + population ~ component,
+                     value.var = "score")
+pca_plot_2d <- ggplot(pca_pd_wide,
+       aes_string(x = plotpcs[[1]],
+                  y = plotpcs[[2]],
+                  colour = "population")) +
+    geom_point()
+
+
 # plot the pca
 pca_plot <- ggplot(pca_pd[component %in% paste0("PC", 1:9)],
                    aes(x = population, y = score, colour = population)) +

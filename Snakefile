@@ -72,6 +72,17 @@ rule target:
 #     <( bcftools query -l pruned.vcf.gz | cut -d'_' -f2,3 )
 # paste blah2 blah2 blah1 > within.txt
 
+#     <( bcftools query -l pruned.vcf.gz | cut -d'_' -f3 )
+
+# fst likes it like this:
+# indiv76_maethm_lincoln    indiv76_maethm_lincoln  maethm
+# indiv68_maethm_lincoln  indiv68_maethm_lincoln  maethm
+
+# het is ok with the documented plink format:
+# maethm indiv76_maethm_lincoln  lincoln
+# maethm  indiv68_maethm_lincoln  lincoln
+
+
 # prune LD with bcftools
 rule prune_vcf:
     input:
